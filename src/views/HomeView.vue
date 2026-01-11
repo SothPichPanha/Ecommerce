@@ -1,15 +1,18 @@
 <script>
-import Search from '../components/SearchComponent.vue'
+import HeaderView from './HeaderView.vue';
+import SearchComponent from '@/components/SearchComponent.vue';
 export default {
   name: 'HomeView',
     components: {
-        Search
+        HeaderView,
+        SearchComponent 
     }
 }
 </script>
 
 <template>
-    <Search />
+  
+   <HeaderView />
 </template>
 
 <style>
