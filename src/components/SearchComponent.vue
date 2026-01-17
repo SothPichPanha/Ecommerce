@@ -21,6 +21,7 @@ export default {
         <DropdownComponent
   v-model="selectedItem"
   title="All Categories"
+  :icons="true"
   :items="['Food', 'Drink', 'Snack']"
 />
       </div>
