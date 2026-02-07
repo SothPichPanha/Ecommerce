@@ -28,7 +28,7 @@ export default {
 
   <div class="flex items-center gap-[50px] ml-[50px]">
     <span class="text-white hover:text-green-500">Home</span>
-    <DropdownComponent v-model="selectedItem1" :icons="false" color="white" itemColor="black" title="Pages" :items="['item1', 'item2', 'item3']" />
+    <DropdownComponent v-model="selectedItem1" :icons="false" color="white " itemColor="black" title="Pages" :items="['item1', 'item2', 'item3']" />
     <DropdownComponent v-model="selectedItem2" :icons="false" color="white" itemColor="black" title="Shop" :items="['item1', 'item2', 'item3']" />
     <DropdownComponent v-model="selectedItem3" :icons="false" color="white" title="Product" :items="['item1', 'item2', 'item3']" />
     <DropdownComponent v-model="selectedItem4" :icons="false" color="white" title="Demo" :items="['item1', 'item2', 'item3']" />

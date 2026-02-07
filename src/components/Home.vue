@@ -10,6 +10,7 @@ export default {
           title: 'Be At One\nWith Your Music',
           subtitle: 'WH-1000XM4 Wireless Noise Cancelling',
           image: 'silver',
+          bgImage: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Ccircle cx=%22150%22 cy=%22150%22 r=%22120%22 fill=%22%23e8e4df%22 opacity=%220.9%22/%3E%3Cpath d=%22M100 150 Q100 110 150 110 Q200 110 200 150%22 stroke=%22%23d4cfc5%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3Ccircle cx=%22100%22 cy=%22150%22 r=%2225%22 fill=%22%23ddd8cd%22/%3E%3Ccircle cx=%22200%22 cy=%22150%22 r=%2225%22 fill=%22%23ddd8cd%22/%3E%3C/svg%3E',
           dotColor: 'bg-blue-600'
         },
         {
@@ -17,6 +18,7 @@ export default {
           title: 'Experience Perfect\nSound Quality',
           subtitle: 'Premium audio with advanced noise cancellation',
           image: 'black',
+          bgImage: 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 300%22%3E%3Ccircle cx=%22150%22 cy=%22150%22 r=%22120%22 fill=%22%23333333%22 opacity=%220.95%22/%3E%3Cpath d=%22M100 150 Q100 110 150 110 Q200 110 200 150%22 stroke=%22%23444444%22 stroke-width=%228%22 fill=%22none%22 stroke-linecap=%22round%22/%3E%3Ccircle cx=%22100%22 cy=%22150%22 r=%2225%22 fill=%22%232a2a2a%22/%3E%3Ccircle cx=%22200%22 cy=%22150%22 r=%2225%22 fill=%22%232a2a2a%22/%3E%3C/svg%3E',
           dotColor: 'bg-gray-400'
         },
         {
@@ -24,6 +26,7 @@ export default {
           title: 'All Day\nComfort & Battery',
           subtitle: '30 hours of battery life on a single charge',
           image: 'silver',
+          bgImage: '/image/handphone.jpg',
           dotColor: 'bg-gray-300'
         }
       ]
@@ -49,8 +52,8 @@ export default {
 </script>
 
 <template>
-  <div class="w-full bg-white">
-    <div class="  min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50">
+  <div class="w-full bg-white" :style="{ backgroundImage: `url('${slides[activeSlide].bgImage}')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }">
+    <div class="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50">
       <div class="absolute inset-0">
         <div 
           v-for="(slide, index) in slides" 
@@ -58,7 +61,7 @@ export default {
           class="absolute inset-0 transition-opacity duration-1000"
           :class="{ 'opacity-100': activeSlide === index, 'opacity-0': activeSlide !== index }"
         >
-          <div class="h-full flex  items-center ">
+          <div class="h-full flex items-center">
             <div class="max-w-9xl mx-auto w-full px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center ml-[50px]">
               <!-- Content -->
               <div class="z-10">
@@ -82,24 +85,12 @@ export default {
                     <div class="w-64 h-64 bg-gradient-to-br from-gray-200 to-transparent rounded-full filter blur-3xl opacity-20 absolute"></div>
                   </div>
 
-                  <!-- Headphones -->
+                  <!-- Headphones Background Image -->
                   <div 
-                    class="relative z-10 transition-transform duration-500"
+                    class="relative z-10 w-96 h-96 transition-transform duration-500 bg-cover bg-center bg-contain bg-no-repeat rounded-full drop-shadow-2xl"
+                    :style="{ backgroundImage: `url('${slide.bgImage}')` }"
                     :class="{ 'translate-y-0 rotate-0': activeSlide === index, 'translate-y-8 rotate-12': activeSlide !== index }"
-                  >
-                    <img 
-                      v-if="slide.image === 'silver'"
-                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Ccircle cx='150' cy='150' r='120' fill='%23e8e4df' opacity='0.9'/%3E%3Cpath d='M100 150 Q100 110 150 110 Q200 110 200 150' stroke='%23d4cfc5' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='100' cy='150' r='25' fill='%23ddd8cd'/%3E%3Ccircle cx='200' cy='150' r='25' fill='%23ddd8cd'/%3E%3C/svg%3E"
-                      alt="Silver Headphones"
-                      class="w-96 drop-shadow-2xl"
-                    />
-                    <img 
-                      v-else
-                      src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'%3E%3Ccircle cx='150' cy='150' r='120' fill='%23333333' opacity='0.95'/%3E%3Cpath d='M100 150 Q100 110 150 110 Q200 110 200 150' stroke='%23444444' stroke-width='8' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='100' cy='150' r='25' fill='%232a2a2a'/%3E%3Ccircle cx='200' cy='150' r='25' fill='%232a2a2a'/%3E%3C/svg%3E"
-                      alt="Black Headphones"
-                      class="w-96 drop-shadow-2xl"
-                    />
-                  </div>
+                  ></div>
                 </div>
               </div>
             </div>
@@ -113,8 +104,8 @@ export default {
           v-for="(slide, index) in slides"
           :key="index"
           @click="goToSlide(index)"
-          class="w-2 h-2 rounded-full transition-all duration-300"
-          :class="activeSlide === index ? 'bg-blue-600 w-8' : 'bg-gray-300 hover:bg-gray-400'"
+          class="rounded-full transition-all duration-300"
+          :class="activeSlide === index ? 'bg-blue-600 w-8 h-2' : 'bg-gray-300 w-2 h-2 hover:bg-gray-400'"
         ></button>
       </div>
 
