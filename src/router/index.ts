@@ -1,8 +1,8 @@
-import HomeView from '@/views/HomeView.vue';
+import HomeView from '@/views/Client/HomeView.vue';
 import NavigationComponent from '@/components/NavigationComponent.vue';
 import BannerComponent from '@/components/BannerComponent.vue';
 import ProductsComponent from '@/components/ProductsComponent.vue';
-
+import Login from '@/views/Client/Login.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -13,6 +13,12 @@ const router = createRouter({
       name: 'Home',
       component: HomeView,
     },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+    },
+    // Client
     {
       path: '/navigation',
       name: 'Navigation',

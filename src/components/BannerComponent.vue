@@ -4,9 +4,9 @@ export default {
 }
 </script>
 <template>
-    <div class="py-10 flex flex-row grid grid-cols-3 " >
+    <div class="py-10 flex flex-row gap-27 " >
 
-        <div class="bg-[url(/image/Group_5909.jpg.png)py-10 flex flex-row grid grid-cols-3 ] w-[330px] h-[240px] border border-gray-300 rounded-lg bg-cover bg-center ">
+        <div class="bg-[url(/image/Group_5909.jpg.png)] w-[330px] h-[240px] border border-gray-300 rounded-lg bg-cover bg-center ">
             <div class="flex flex-col gap-2 mt-10 ml-10 text-black font-bold text-[20px] pt-[25px] ">
                 <span>Osmo</span>
                 <span>Pocket Series</span>

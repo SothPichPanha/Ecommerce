@@ -1,8 +1,8 @@
 <script>
-import HeaderView from './HeaderView.vue';
+import HeaderView from '../Client/HeaderView.vue';
 import SearchComponent from '@/components/SearchComponent.vue';
 import Home from '@/components/Home.vue';
-import BodyView from './BodyView.vue';
+import BodyView from '../Client/BodyView.vue';
 export default {
   name: 'HomeView',
     components: {
@@ -15,20 +15,22 @@ export default {
 </script>
 
 <template>
-  
-  <div class="">
+  <div class="min-h-screen flex flex-col">
+
+    <!-- Header -->
     <HeaderView />
-  </div>
-  <div>
+
+    <!-- Hero / Home Section -->
     <Home />
-    
+
+    <!-- Body Section -->
+    <div class=" mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <BodyView />
+    </div>
+
   </div>
-  <div class="container-body mt-10 ml-[180px] mb-10 ">
-    <BodyView />
-    
-  </div>
-   
 </template>
+
 
 <style>
 

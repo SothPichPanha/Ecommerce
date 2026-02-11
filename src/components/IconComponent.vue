@@ -5,12 +5,13 @@ export default {
 </script>
 
 <template>
-    <div class="flex items-center gap-6">
+  <div class="flex items-center gap-6">
     <!-- User -->
-    <button class="text-gray-800 hover:text-blue-600 text-xl">
-      <i class="pi pi-user"></i>
-    </button>
-
+    <router-link to="/login">
+      <button class="text-gray-800 hover:text-blue-600 text-xl">
+        <i class="pi pi-user"></i>
+      </button>
+    </router-link>
     <!-- Wishlist -->
     <button class="relative text-gray-800 hover:text-blue-600 text-xl">
       <i class="pi pi-heart"></i>
