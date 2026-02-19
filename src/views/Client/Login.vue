@@ -91,49 +91,8 @@ export default {
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
         
         <!-- Left side - Branding section (hidden on mobile) -->
-        <div class="hidden lg:flex flex-col gap-12 pr-10">
-          <!-- Brand header -->
-          <div class="animate-slide-in-left" style="animation-delay: 0.1s">
-            <h1 class="text-5xl md:text-6xl font-black mb-3 -tracking-wider">
-              <span class="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Nexus</span>
-            </h1>
-            <p class="text-xl font-semibold text-gray-600">Premium Authentication</p>
-          </div>
-
-          <!-- Features list -->
-          <div class="flex flex-col gap-6 animate-slide-in-left" style="animation-delay: 0.3s">
-            <div class="flex gap-4 items-start">
-              <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-black stroke-[2.5]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <polyline points="20 6 9 17 4 12"></polyline>
-                </svg>
-              </div>
-              <p class="text-base font-semibold text-gray-900">Secure & Encrypted</p>
-            </div>
-            <div class="flex gap-4 items-start">
-              <div class="w-10 h-10 bg-white to-purple-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-black stroke-[2]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                </svg>
-              </div>
-              <p class="text-base font-semibold text-gray-900">Privacy First</p>
-            </div>
-            <div class="flex gap-4 items-start">
-              <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center flex-shrink-0">
-                <svg class="w-5 h-5 text-black stroke-[2]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <path d="M12 6v6l4 2"></path>
-                </svg>
-              </div>
-              <p class="text-base font-semibold text-gray-900">24/7 Support</p>
-            </div>
-          </div>
-
-          <!-- Testimonial -->
-          <div class="bg-white/70 border border-white/90 rounded-2xl p-7 backdrop-blur-sm animate-slide-in-left" style="animation-delay: 0.5s">
-            <p class="text-base text-gray-900 italic leading-relaxed mb-3">"The most seamless authentication experience I've ever used."</p>
-            <p class="text-sm text-gray-600 font-semibold">— Sarah Mitchell, CEO</p>
-          </div>
+        <div class="hidden lg:flex flex-col gap-12 pr-10 w-[500px] h-[900px] bg-red-500 bg-[url('/image/handphone2.jpg')] bg-cover bg-center rounded-3xl shadow-2xl border border-white/80 backdrop-blur-md animate-slide-in-left">
+          <span></span>
         </div>
 
         <!-- Right side - Auth card -->

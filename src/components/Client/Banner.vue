@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'Home',
+  name: 'Banner',
   data() {
     return {
       activeSlide: 0,
@@ -9,25 +9,9 @@ export default {
           id: 1,
           title: 'Be At One\nWith Your Music',
           subtitle: 'WH-1000XM4 Wireless Noise Cancelling',
-          bgImage: '/image/handphone.jpg',
+          bgImage: '/image/ba1.png',
           dotColor: 'bg-blue-600'
         },
-        {
-          id: 2,
-          title: 'Experience Perfect\nSound Quality',
-          subtitle: 'Premium audio with advanced noise cancellation',
-          bgImage: '/image/handphone2.jpg',
-          
-          dotColor: 'bg-gray-400'
-        },
-        {
-          id: 3,
-          title: 'All Day\nComfort & Battery',
-          subtitle: '30 hours of battery life on a single charge',
-          bgImage: '/image/headphone.jpg',
-          backgroundColor: 'from-blue-50 to-gray-50',
-          dotColor: 'bg-gray-300'
-        }
       ]
     }
   },
@@ -52,7 +36,7 @@ export default {
 
 <template>
   <div>
-    <div class="min-h-screen relative overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="h-[400px] relative overflow-hidden bg-gradient-to-br from-gray-50 to-blue-50">
       <div class="absolute inset-0">
         <div 
           v-for="(slide, index) in slides" 
@@ -87,36 +71,7 @@ export default {
         </div>
       </div>
 
-      <!-- Slide Indicators -->
-      <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 flex gap-3">
-        <button 
-          v-for="(slide, index) in slides"
-          :key="index"
-          @click="goToSlide(index)"
-          class="rounded-full transition-all duration-300"
-          :class="activeSlide === index ? 'bg-blue-600 w-8 h-2' : 'bg-gray-300 w-2 h-2 hover:bg-gray-400'"
-        ></button>
-      </div>
-
-      <!-- Navigation Arrows -->
-      <button 
-        @click="prevSlide"
-        class="absolute left-6 top-1/2 transform -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition"
-        aria-label="Previous slide"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-      <button 
-        @click="nextSlide"
-        class="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 bg-white/80 hover:bg-white p-3 rounded-full shadow-lg transition"
-        aria-label="Next slide"
-      >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
+      
     </div>
   </div>
 </template>
