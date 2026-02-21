@@ -1,4 +1,6 @@
 <script>
+import authService from "@/services/api.js";
+
 export default {
   name: "AuthPage",
   data() {
@@ -14,12 +16,14 @@ export default {
       showConfirm: false,
       isLoading: false,
       formErrors: {},
+      apiError: "",
     };
   },
   methods: {
     async submit() {
       this.formErrors = {};
-      
+      this.apiError = "";
+
       // Validation
       if (!this.form.email) {
         this.formErrors.email = "Email is required";
@@ -29,7 +33,7 @@ export default {
         this.formErrors.password = "Password must be at least 6 characters";
         return;
       }
-      
+
       if (this.mode === "register") {
         if (!this.form.name) {
           this.formErrors.name = "Name is required";
@@ -42,23 +46,71 @@ export default {
       }
 
       this.isLoading = true;
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      this.isLoading = false;
 
-      if (this.mode === "login") {
-        alert("✓ Logged in successfully: " + this.form.email);
-      } else {
-        alert("✓ Account created: " + this.form.email);
+      try {
+        if (this.mode === "login") {
+          const response = await authService.login({
+            email: this.form.email,
+            password: this.form.password,
+          });
+
+          // Store token if returned (adjust key to match your API response)
+          if (response.data?.token) {
+            localStorage.setItem('token', response.data.token);
+          }
+
+          alert("✓ Logged in successfully: " + this.form.email);
+          // TODO: redirect after login, e.g. this.$router.push('/dashboard')
+
+        } else {
+          const response = await authService.register({
+            name: this.form.name,
+            email: this.form.email,
+            password: this.form.password,
+          });
+
+          // Store token if returned on register
+          if (response.data?.token) {
+            localStorage.setItem('token', response.data.token);
+          }
+
+          alert("✓ Account created: " + this.form.email);
+          // TODO: redirect after register, e.g. this.$router.push('/dashboard')
+        }
+
+        this.resetForm();
+
+      } catch (error) {
+        if (error.response) {
+          const status = error.response.status;
+          const data = error.response.data;
+
+          if (status === 422 && data?.errors) {
+            // Laravel-style validation errors: { errors: { field: ["msg"] } }
+            Object.entries(data.errors).forEach(([field, messages]) => {
+              this.formErrors[field] = Array.isArray(messages) ? messages[0] : messages;
+            });
+          } else if (status === 401) {
+            this.apiError = "Invalid email or password.";
+          } else if (status === 409) {
+            this.apiError = "An account with this email already exists.";
+          } else {
+            this.apiError = data?.message || "Something went wrong. Please try again.";
+          }
+        } else if (error.request) {
+          this.apiError = "Unable to reach the server. Please check your connection.";
+        } else {
+          this.apiError = "An unexpected error occurred.";
+        }
+      } finally {
+        this.isLoading = false;
       }
-      
-      // Reset form
-      this.resetForm();
     },
 
     resetForm() {
       this.form = { name: "", email: "", password: "", confirm: "" };
       this.formErrors = {};
+      this.apiError = "";
     },
 
     toggleMode() {
@@ -89,7 +141,7 @@ export default {
     <!-- Main content -->
     <div class="relative z-10 w-full max-w-6xl">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-20 items-center">
-        
+
         <!-- Left side - Branding section (hidden on mobile) -->
         <div class="hidden lg:flex flex-col gap-12 pr-10 w-[500px] h-[900px] bg-red-500 bg-[url('/image/handphone2.jpg')] bg-cover bg-center rounded-3xl shadow-2xl border border-white/80 backdrop-blur-md animate-slide-in-left">
           <span></span>
@@ -108,6 +160,21 @@ export default {
                 : "Create your account in seconds" }}
             </p>
           </div>
+
+          <!-- API Error Banner -->
+          <transition name="slide-fade">
+            <div
+              v-if="apiError"
+              class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-600 text-sm font-medium animate-slide-down"
+            >
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              </svg>
+              {{ apiError }}
+            </div>
+          </transition>
 
           <!-- Form -->
           <form @submit.prevent="submit" class="flex flex-col gap-5 mb-7" novalidate>
@@ -234,8 +301,8 @@ export default {
             </transition>
 
             <!-- Submit button -->
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               class="w-full py-3.5 px-5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-bold uppercase tracking-wider transition-all duration-300 hover:shadow-lg hover:shadow-blue-600/30 hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-80 disabled:cursor-not-allowed mt-2.5"
               :disabled="isLoading"
             >
@@ -261,19 +328,19 @@ export default {
 
             <!-- Social buttons -->
             <div class="grid grid-cols-2 gap-3 mb-5">
-              <button 
-                type="button" 
-                class="flex items-center justify-center gap-2 py-3 px-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900 font-semibold text-sm transition-all duration-300   hover:bg-blue-600  hover:text-white hover:border-transparent hover:-translate-y-0.5"
+              <button
+                type="button"
+                class="flex items-center justify-center gap-2 py-3 px-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900 font-semibold text-sm transition-all duration-300 hover:bg-blue-600 hover:text-white hover:border-transparent hover:-translate-y-0.5"
               >
                 <span class="pi pi-google"></span>
                 <span>Google</span>
               </button>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="flex items-center justify-center gap-2 py-3 px-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-900 font-semibold text-sm transition-all duration-300 hover:bg-gray-900 hover:text-white hover:border-transparent hover:-translate-y-0.5"
               >
                 <svg class="w-4.5 h-4.5 fill-current" viewBox="0 0 24 24">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v 3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
                 <span>GitHub</span>
               </button>
@@ -284,8 +351,8 @@ export default {
           <div class="text-center pt-5 border-t border-gray-100">
             <p class="text-sm text-gray-600">
               {{ mode === "login" ? "Don't have an account?" : "Already have an account?" }}
-              <button 
-                type="button" 
+              <button
+                type="button"
                 class="ml-1.5 font-bold text-blue-600 hover:text-purple-600 hover:underline transition-all"
                 @click="toggleMode"
               >
@@ -305,142 +372,50 @@ export default {
 </template>
 
 <style scoped>
-/* Custom animations */
 @keyframes slide-in-left {
-  from {
-    opacity: 0;
-    transform: translateX(-50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(-50px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes slide-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(50px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
 }
-
 @keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes float-slow {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  25% {
-    transform: translateY(-30px) translateX(-10px);
-  }
-  50% {
-    transform: translateY(-60px) translateX(20px);
-  }
-  75% {
-    transform: translateY(-30px) translateX(10px);
-  }
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  25% { transform: translateY(-30px) translateX(-10px); }
+  50% { transform: translateY(-60px) translateX(20px); }
+  75% { transform: translateY(-30px) translateX(10px); }
 }
-
 @keyframes float-medium {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  25% {
-    transform: translateY(-30px) translateX(-10px);
-  }
-  50% {
-    transform: translateY(-60px) translateX(20px);
-  }
-  75% {
-    transform: translateY(-30px) translateX(10px);
-  }
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  25% { transform: translateY(-30px) translateX(-10px); }
+  50% { transform: translateY(-60px) translateX(20px); }
+  75% { transform: translateY(-30px) translateX(10px); }
 }
-
 @keyframes float-fast {
-  0%, 100% {
-    transform: translateY(0px) translateX(0px);
-  }
-  25% {
-    transform: translateY(-30px) translateX(-10px);
-  }
-  50% {
-    transform: translateY(-60px) translateX(20px);
-  }
-  75% {
-    transform: translateY(-30px) translateX(10px);
-  }
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  25% { transform: translateY(-30px) translateX(-10px); }
+  50% { transform: translateY(-60px) translateX(20px); }
+  75% { transform: translateY(-30px) translateX(10px); }
 }
-
-.animate-slide-in-left {
-  animation: slide-in-left 0.8s ease-out forwards;
-}
-
-.animate-slide-in-right {
-  animation: slide-in-right 0.8s ease-out forwards;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.6s ease-out forwards;
-  opacity: 0;
-}
-
-.animate-slide-down {
-  animation: slide-down 0.3s ease-out;
-}
-
-.animate-float-slow {
-  animation: float-slow 8s ease-in-out infinite;
-}
-
-.animate-float-medium {
-  animation: float-medium 10s ease-in-out infinite 2s;
-}
-
-.animate-float-fast {
-  animation: float-fast 12s ease-in-out infinite 4s;
-}
-
-/* Transition for form fields */
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.3s ease;
-}
-
-.slide-fade-enter-from {
-  transform: translateX(-10px);
-  opacity: 0;
-}
-
-.slide-fade-leave-to {
-  transform: translateX(10px);
-  opacity: 0;
-}
-
-/* Custom gradient radial background */
+.animate-slide-in-left { animation: slide-in-left 0.8s ease-out forwards; }
+.animate-slide-in-right { animation: slide-in-right 0.8s ease-out forwards; }
+.animate-slide-up { animation: slide-up 0.6s ease-out forwards; opacity: 0; }
+.animate-slide-down { animation: slide-down 0.3s ease-out; }
+.animate-float-slow { animation: float-slow 8s ease-in-out infinite; }
+.animate-float-medium { animation: float-medium 10s ease-in-out infinite 2s; }
+.animate-float-fast { animation: float-fast 12s ease-in-out infinite 4s; }
+.slide-fade-enter-active, .slide-fade-leave-active { transition: all 0.3s ease; }
+.slide-fade-enter-from { transform: translateX(-10px); opacity: 0; }
+.slide-fade-leave-to { transform: translateX(10px); opacity: 0; }
 .bg-gradient-radial {
   background: radial-gradient(circle at 30% 50%, rgba(102, 126, 234, 0.1), transparent 50%),
               radial-gradient(circle at 70% 80%, rgba(245, 87, 108, 0.1), transparent 50%);

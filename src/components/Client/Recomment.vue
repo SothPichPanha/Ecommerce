@@ -1,6 +1,8 @@
 <script>
 import ProductsComponent from '../ProductsComponent.vue';
 import featureList from '../featureList.vue';
+import { useProductStore } from '@/services/store.js';
+
 export default {
   name: 'Recomment',
   components: {
@@ -11,9 +13,27 @@ export default {
     image: {
       type: String,
       default: '/image/p2.png'
+    },
+    productId: {
+      type: [String, Number],
+      required: false,
+    },
+  },
+  data() {
+    return {
+      productStore: useProductStore(),
+      currentSlide: 0
+    };
+  },
+  mounted() {
+    this.productStore.loadProducts();
+  },
+  computed: {
+    // only take first three products for recommendation
+    displayProducts() {
+      return this.productStore.products.slice(0, 4);
     }
   },
-
   methods: {
     addToCart(productId) {
       console.log('Added product', productId, 'to cart');
@@ -24,13 +44,15 @@ export default {
       this.$router.push('/products');
     },
     nextSlide() {
-      this.currentSlide = (this.currentSlide + 1) % Math.ceil(this.products.length / 4);
+      const count = this.productStore.products.length;
+      this.currentSlide = (this.currentSlide + 1) % Math.ceil(count / 4);
     },
     prevSlide() {
-      this.currentSlide = this.currentSlide === 0 ? Math.ceil(this.products.length / 4) - 1 : this.currentSlide - 1;
+      const count = this.productStore.products.length;
+      this.currentSlide = this.currentSlide === 0 ? Math.ceil(count / 4) - 1 : this.currentSlide - 1;
     }
   }
-}
+};
 </script>
 
 <template>
@@ -62,10 +84,12 @@ export default {
         <div >
             <featureList title="Recommended For You" :items="'View All'" :gap="'false'" />
             <div class="flex grid-cols-1 lg:col-span-3 gap-6 mb-12">
-                <ProductsComponent />
-                <ProductsComponent />
-                <ProductsComponent />
-                <ProductsComponent />
+               <ProductsComponent
+                v-for="product in displayProducts"
+                :key="product.id"
+                :product-id="product.id"
+              />
+                 
             </div>
             
         </div>
